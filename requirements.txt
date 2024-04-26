@@ -1,2 +1,4 @@
 matplotlib
 hydralit_components
+scipy.integrate
+scipy.optimize
