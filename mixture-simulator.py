@@ -84,7 +84,7 @@ st.session_state.setdefault("v_proportion_very_high", 0.8) # Initial viruliferou
 
 # Cassava growing parameters
 st.session_state.setdefault("K", 10000) # Field density
-st.session_state.setdefault("T", 300) # Season duration
+st.session_state.setdefault("T", 365) # Season duration
 
 # Selected pressure parameters
 st.session_state.setdefault("f", st.session_state.f_very_low) # Insect abundance per plant
@@ -143,7 +143,7 @@ def main():
             elif vector_disease_pressure_option_dic[selected_pressure] == 4:
                 st.session_state.v_proportion = st.session_state.v_proportion_very_high
     with col3:
-        st.session_state.T = st.slider("Season duration (days):", min_value=150, max_value=365, value=st.session_state.T, step=1)
+        st.session_state.T = st.slider("Season duration (days):", min_value=150, max_value=700, value=st.session_state.T, step=1)
         
    
     st.markdown("<hr>", unsafe_allow_html=True)
