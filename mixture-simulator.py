@@ -41,15 +41,15 @@ main_tab= hc.nav_bar(
 # Set Plant parameters
 
 # Plant A parameters
-st.session_state.setdefault("alpha_A", 0.005)  # Acquisition rate
-st.session_state.setdefault("beta_A", 0.005)  # Inoculation rate
+st.session_state.setdefault("alpha_A", 0.01)  # Acquisition rate
+st.session_state.setdefault("beta_A", 0.01)  # Inoculation rate
 st.session_state.setdefault("yield_healthy_A", 40.0) # Average yield when healthy
 st.session_state.setdefault("yield_diseased_A", 21.0) # Average yield when diseased
 st.session_state.setdefault("gamma_A", 0.05)  # Latency speed
 
 # Plant B parameters
-st.session_state.setdefault("alpha_B", 0.008)  # Acquisition rate
-st.session_state.setdefault("beta_B", 0.006)  # Inoculation rate
+st.session_state.setdefault("alpha_B", 0.02)  # Acquisition rate
+st.session_state.setdefault("beta_B", 0.018)  # Inoculation rate
 st.session_state.setdefault("yield_healthy_B", 44.0) # Average yield when healthy
 st.session_state.setdefault("yield_diseased_B", 21.0) # Average yield when diseased
 st.session_state.setdefault("gamma_B", 0.0667)  # Latency speed
@@ -57,9 +57,9 @@ st.session_state.setdefault("gamma_B", 0.0667)  # Latency speed
 
 
 # Insect parameters
-st.session_state.setdefault("sigma", 0.2) # Dispersal parameter
-st.session_state.setdefault("omega", 0.05) # Mortality parameter
-st.session_state.setdefault("r", 0.0)  # Recovering parameter
+st.session_state.setdefault("sigma", 0.01) # Dispersal parameter
+st.session_state.setdefault("omega", 0.01) # Mortality parameter
+st.session_state.setdefault("r", 0.01)  # Recovering parameter
 
 # Insect abundance parameters
 st.session_state.setdefault("f_very_low", 0.1) # Insect abundance per plant in very low insect pressure
@@ -84,8 +84,7 @@ st.session_state.setdefault("v_proportion_very_high", 0.8) # Initial viruliferou
 
 # Cassava growing parameters
 st.session_state.setdefault("K", 10000) # Field density
-st.session_state.setdefault("T", 365) # Season duration
-st.session_state.setdefault("rho", 0.011) # Roguing rate
+st.session_state.setdefault("T", 300) # Season duration
 
 # Selected pressure parameters
 st.session_state.setdefault("f", st.session_state.f_very_low) # Insect abundance per plant
@@ -144,7 +143,7 @@ def main():
             elif vector_disease_pressure_option_dic[selected_pressure] == 4:
                 st.session_state.v_proportion = st.session_state.v_proportion_very_high
     with col3:
-        st.session_state.T = st.slider("Season duration (days):", min_value=150, max_value=700, value=st.session_state.T, step=1)
+        st.session_state.T = st.slider("Season duration (days):", min_value=150, max_value=365, value=st.session_state.T, step=1)
         
    
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -168,15 +167,15 @@ if main_tab == "Edit varieties":
     _, col1, col2, _ = st.columns([1, 5, 5, 1])
     with col1:
         st.markdown("### Variety A")
-        st.session_state.alpha_A= st.slider("Acquisition rate A", min_value=0.0, max_value=0.05, value=st.session_state.alpha_A, step=0.001)
-        st.session_state.beta_A= st.slider("Inoculation rate A", min_value=0.0, max_value=0.05, value=st.session_state.beta_A, step=0.001)
+        st.session_state.alpha_A= st.slider("Acquisition rate A", min_value=0.0, max_value=1.0, value=st.session_state.alpha_A, step=0.01)
+        st.session_state.beta_A= st.slider("Inoculation rate A", min_value=0.0, max_value=1.0, value=st.session_state.beta_A, step=0.01)
         st.session_state.gamma_A= 1/st.slider("Latency duration A(days)", min_value=0, max_value=20, value=int(1/st.session_state.gamma_A), step=1)
         st.session_state.yield_healthy_A= st.slider("Yield when healthy A(ton/ha)", min_value=0.0, max_value=100.0, value=st.session_state.yield_healthy_A, step=0.5)
         st.session_state.yield_diseased_A= st.slider("Yield when infected A(ton/ha)", min_value=0.0, max_value=100.0, value=st.session_state.yield_diseased_A, step=0.5)
     with col2:
         st.markdown("### Variety B")
-        st.session_state.alpha_B= st.slider("Acquisition rate B", min_value=0.0, max_value=0.05, value=st.session_state.alpha_B, step=0.001)
-        st.session_state.beta_B= st.slider("Inoculation rate B", min_value=0.0, max_value=0.05, value=st.session_state.beta_B, step=0.001)
+        st.session_state.alpha_B= st.slider("Acquisition rate B", min_value=0.0, max_value=1.0, value=st.session_state.alpha_B, step=0.01)
+        st.session_state.beta_B= st.slider("Inoculation rate B", min_value=0.0, max_value=1.0, value=st.session_state.beta_B, step=0.01)
         st.session_state.gamma_B= 1/st.slider("Latency duration B(days)", min_value=0, max_value=20, value=int(1/st.session_state.gamma_B), step=1)
         st.session_state.yield_healthy_B= st.slider("Yield when healthy B(ton/ha)", min_value=0.0, max_value=100.0, value=st.session_state.yield_healthy_B, step=0.5)
         st.session_state.yield_diseased_B= st.slider("Yield when infected B(ton/ha)", min_value=0.0, max_value=100.0, value=st.session_state.yield_diseased_B, step=0.5)
