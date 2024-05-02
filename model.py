@@ -10,6 +10,7 @@ def modelTrajectories(theta, session_state):
     f = session_state.f 
     K = session_state.K
     T = session_state.T
+    rho = session_state.absolute_roguing_rate
     sigma = session_state.sigma
     omega = session_state.omega
     r = session_state.r
@@ -19,6 +20,8 @@ def modelTrajectories(theta, session_state):
     beta_B = session_state.beta_B
     gamma_A = session_state.gamma_A
     gamma_B = session_state.gamma_B
+    d_A = session_state.d_A
+    d_B = session_state.d_B
     # Initial values
     lA_0 = 0
     iA_0 = I_proportion * theta
@@ -33,9 +36,9 @@ def modelTrajectories(theta, session_state):
         lA, iA, lB, iB, VA, VB = y
         psi = 1/(sigma + omega + r)
         dlAdt = (psi*sigma/K)*beta_A*(theta - lA - iA)*(VA + VB) - gamma_A*lA
-        diAdt = gamma_A * lA
+        diAdt = gamma_A * lA - rho*d_A*iA
         dlBdt = (psi*sigma/K)*beta_B*(1 - theta - lB - iB)*(VA + VB) - gamma_B*lB
-        diBdt = gamma_B * lB
+        diBdt = gamma_B * lB - rho*d_B*iB
         dVAdt = alpha_A*(iA*F - psi*(sigma*iA*(VA+VB) + (omega+r)*VA)) - (omega + r)*VA
         dVBdt = alpha_B*(iB*F - psi*(sigma*iB*(VA+VB) + (omega+r)*VB)) - (omega + r)*VB
         return [dlAdt, diAdt, dlBdt, diBdt, dVAdt, dVBdt]
