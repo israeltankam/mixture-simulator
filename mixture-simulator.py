@@ -45,7 +45,7 @@ st.session_state.setdefault("alpha_A", 0.045)  # Acquisition rate
 st.session_state.setdefault("beta_A", 0.66)  # Inoculation rate
 st.session_state.setdefault("yield_healthy_A", 42.0) # Average yield when healthy
 st.session_state.setdefault("yield_diseased_A", 25.0) # Average yield when diseased
-st.session_state.setdefault("gamma_A", 0.05)  # Latency speed
+st.session_state.setdefault("gamma_A", 0.033)  # Latency speed
 st.session_state.setdefault("d_A", 0.95)  # Detection probability
 
 # Plant B parameters
@@ -59,16 +59,16 @@ st.session_state.setdefault("d_B", 0.95)  # Detection probability
 
 
 # Insect parameters
-st.session_state.setdefault("sigma", 0.01) # Dispersal parameter
-st.session_state.setdefault("omega", 0.01) # Mortality parameter
-st.session_state.setdefault("r", 0.01)  # Recovering parameter
+st.session_state.setdefault("sigma", 0.45) # Dispersal parameter
+st.session_state.setdefault("omega", 0.19) # Mortality parameter
+st.session_state.setdefault("r", 0.0)  # Recovering parameter
 
 # Insect abundance parameters
 st.session_state.setdefault("f_very_low", 0.1) # Insect abundance per plant in very low insect pressure
 st.session_state.setdefault("f_low", 1.0) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_medium", 5.0) # Insect abundance per plant in medium insect pressure
-st.session_state.setdefault("f_high", 20.0) # Insect abundance per plant in high insect pressure
-st.session_state.setdefault("f_very_high", 100.0) # Insect abundance per plant in  very high insect pressure
+st.session_state.setdefault("f_high", 10.0) # Insect abundance per plant in high insect pressure
+st.session_state.setdefault("f_very_high", 50.0) # Insect abundance per plant in  very high insect pressure
 
 # Disease pressure in plants parameters
 st.session_state.setdefault("I_proportion_very_low", 0.01) # Initial infected plant proportion in very low pressure
