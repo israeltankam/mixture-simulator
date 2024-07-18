@@ -2,5 +2,5 @@ matplotlib==3.7.1
 hydralit_components==1.0.10
 scipy==1.13.0
 streamlit==1.36.0
-numpy==1.25.2  # Adjusted version
-pandas==2.1.0  # Adjusted version
+numpy==1.24.3
+pandas==2.0.3
