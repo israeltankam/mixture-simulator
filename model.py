@@ -6,10 +6,10 @@ import streamlit as st
 
 def modelTrajectories(theta, session_state):
     # Importing parameters
-    I_proportion = session_state.I_proportion 
     f = session_state.f 
     K = session_state.K
     T = session_state.T
+    rho = session_state.absolute_roguing_rate
     sigma = session_state.sigma
     omega = session_state.omega
     r = session_state.r
@@ -19,13 +19,15 @@ def modelTrajectories(theta, session_state):
     beta_B = session_state.beta_B
     gamma_A = session_state.gamma_A
     gamma_B = session_state.gamma_B
+    d_A = session_state.d_A
+    d_B = session_state.d_B
     # Initial values
     lA_0 = 0
-    iA_0 = I_proportion * theta
+    iA_0 = 0.5/K
     lB_0 = 0
-    iB_0 = I_proportion * (1-theta)
+    iB_0 = 0.5/K
     F = f * K
-    VA_0 = session_state.v_proportion * F/2
+    VA_0 = 0 #0.1 * F/2 # Initially, 10% of vectors are infected
     VB_0 = VA_0
     
     # Define the ODE system
@@ -33,9 +35,9 @@ def modelTrajectories(theta, session_state):
         lA, iA, lB, iB, VA, VB = y
         psi = 1/(sigma + omega + r)
         dlAdt = (psi*sigma/K)*beta_A*(theta - lA - iA)*(VA + VB) - gamma_A*lA
-        diAdt = gamma_A * lA
+        diAdt = gamma_A * lA - rho*d_A*iA
         dlBdt = (psi*sigma/K)*beta_B*(1 - theta - lB - iB)*(VA + VB) - gamma_B*lB
-        diBdt = gamma_B * lB
+        diBdt = gamma_B * lB - rho*d_B*iB
         dVAdt = alpha_A*(iA*F - psi*(sigma*iA*(VA+VB) + (omega+r)*VA)) - (omega + r)*VA
         dVBdt = alpha_B*(iB*F - psi*(sigma*iB*(VA+VB) + (omega+r)*VB)) - (omega + r)*VB
         return [dlAdt, diAdt, dlBdt, diBdt, dVAdt, dVBdt]
@@ -109,7 +111,8 @@ def displayOptimal(theta, session_state):
     percentageA = theta * 100
     percentageB = (1 - theta) * 100
     yieldA, yieldB = distinctCropYield(theta, session_state)
-
+    category_A = session_state.category_A
+    category_B = session_state.category_B
     total_yield = yieldA + yieldB
 
     # Plotting
@@ -123,8 +126,8 @@ def displayOptimal(theta, session_state):
     kw = dict(arrowprops=dict(arrowstyle="-"),
               bbox=bbox_props, zorder=0, va="center")
 
-    tooltips = [r'$\bf{Cultivar \ A}$' + f'\n{percentageA:.2f} %\nyield = {yieldA:.2f}' + ' ton/ha',
-                r'$\bf{Cultivar \ B}$' + f'\n{percentageB:.2f} %\nyield = {yieldB:.2f}' + ' ton/ha']
+    tooltips = [r'$\bf{Cultivar \ A}$' + f'\n({category_A})' + f'\n{percentageA:.2f} %\nyield = {yieldA:.2f}' + ' ton/ha',
+                r'$\bf{Cultivar \ B}$' + f'\n({category_B})' + f'\n{percentageB:.2f} %\nyield = {yieldB:.2f}' + ' ton/ha']
 
     for i, p in enumerate(wedges):
         ang = (p.theta2 - p.theta1)/2. + p.theta1
@@ -144,7 +147,9 @@ def displayOptimal(theta, session_state):
 
 def displayDiseaseDynamics(theta, session_state):
     sol = modelTrajectories(theta, session_state)
-
+    yieldA, yieldB = distinctCropYield(theta, session_state)
+    total_yield = yieldA + yieldB
+    
     # Access the solution
     t_values = sol.t
     lA_values, iA_values, lB_values, iB_values, VA_values, VB_values = sol.y
@@ -160,7 +165,7 @@ def displayDiseaseDynamics(theta, session_state):
     axes[0].set_title('Disease Dynamics Over Time')
     axes[0].legend()
     axes[0].grid(True)
-
+    axes[0].text(10, max(np.max(iA_values),np.max(iB_values))/2, f'Yield of Cultivar A = {yieldA:.2f}' + ' ton/ha \n' + f'Yield of Cultivar B = {yieldB:.2f}' + ' ton/ha \n' + f'Total Yield = {total_yield:.2f}' + ' ton/ha', fontsize=12, color='black', ha='left', va='center', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.5'))
     # Second subplot
     axes[1].plot(t_values, VA_values, label='Acquired on A plants')
     axes[1].plot(t_values, VB_values, label='Acquired on B plants')
