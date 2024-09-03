@@ -23,9 +23,9 @@ def modelTrajectories(theta, session_state):
     d_B = session_state.d_B
     # Initial values
     lA_0 = 0
-    iA_0 = theta/K
+    iA_0 = 0.5/K
     lB_0 = 0
-    iB_0 = (1-theta)/K
+    iB_0 = 0.5/K
     F = f * K
     VA_0 = 0 #0.1 * F/2 # Initially, 10% of vectors are infected
     VB_0 = VA_0
