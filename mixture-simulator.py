@@ -25,7 +25,7 @@ st.set_page_config(layout='wide',initial_sidebar_state='collapsed')
 menu_data = [
     {'icon': "far fa-chart-bar", 'label':"Simulation"},#no tooltip message
     {'icon': "fas fa-seedling", 'label':"Select cultivars"},
-    {'icon': "fas fa-tachometer-alt", 'label':"About & Settings"},
+    {'icon': "fas fa-tachometer-alt", 'label':"About & Parameters"},
 ]
 
 over_theme = {'txc_inactive': '#FFFFFF', 'menu_background':'#85929E'}
@@ -177,23 +177,21 @@ if main_tab == "Simulation":
    #     st.session_state.yield_healthy_B= st.slider("Yield when healthy B(ton/ha)", min_value=0, max_value=100, value=st.session_state.yield_healthy_B, step=1)
    #     st.session_state.yield_diseased_B= st.slider("Yield when infected B(ton/ha)", min_value=0, max_value=100, value=st.session_state.yield_diseased_B, step=1)
     
-elif main_tab == "About & Settings":
-    col1, col2, _ = st.columns([1, 5, 4])
+elif main_tab == "About & Parameters":
+    col1, col2, _ = st.columns([3, 10, 8])
     with col1:
         st.markdown("# About")
     with col2:
         st.markdown("# ")
         st.markdown("# ")
-        st.markdown("- The model consider a mixture of two cassava varieties named 'Cultivar A' and 'Cultivar B' ")
-        st.markdown("- Each cultivar has an intrinsic virus inoculation rate, virus acquisition rate and virus incubaation duration")
-        st.markdown("- We name 'Disease pressure in plants' the initial fraction of plants that are infeted and assume it uniformelly distributed in both varieties")
-        st.markdown("- We assume that initially they are no cryptic cassava plants. They are either infected of susceptible.")
-        st.markdown("- The vector abundance per plant is constant and defined by the 'Insect pressure'")
-        st.markdown("- Among the vectors, those that are initially viruliferous are defined by the 'Disease pressure in vectors' ")
-        st.markdown("- We assume an initially equal distribution between those who acquired the virus on A cultivars and B cultivars")
-    col1, col2, _ = st.columns([1, 5, 4])
+        st.markdown("- The model consider a mixture of two cassava cultivars named 'Cultivar A' and 'Cultivar B' ")
+        st.markdown("- The plant cultivars can be selected in the 'Select cultivar' tab and they differ by their resistance status and yields")
+        st.markdown("- We assume a constant plant-wise insect abundance in the locality")
+        st.markdown("- We assume an initial disease inoculum of 1 plant on 10 000")
+        st.markdown("- Insect are initially all virus-free")
+    col1, col2, _ = st.columns([3, 10, 8])
     with col1:
-        st.markdown("# Settings")
+        st.markdown("# Parameter settings")
     with col2:
         st.markdown("# ")
         st.markdown("### Insect parameters ")
