@@ -29,7 +29,7 @@ menu_data = [
 ]
 
 over_theme = {'txc_inactive': '#FFFFFF', 'menu_background':'#85929E'}
-st.markdown("# Cassava Mixture simulator")
+st.markdown("## Cassava Mixture simulator")
 main_tab= hc.nav_bar(
     menu_definition=menu_data,
     override_theme=over_theme,
@@ -43,6 +43,9 @@ main_tab= hc.nav_bar(
 
 # Set Plant parameters
 
+#Default varieties selected in the cultivar editing tab (edit_var.py
+st.session_state.setdefault("selected_first", (0, 1))  # First variety selected in the grid
+st.session_state.setdefault("selected_second", (3, 6))  # Second variety selected in the grid
 #Mixture distribution
 st.session_state.setdefault("theta_A", 0.5)  # 50% of each variaty as default mixture
 
@@ -83,7 +86,7 @@ st.session_state.setdefault("f_very_high", 50.0) # Insect abundance per plant in
 # Cassava growing parameters
 st.session_state.setdefault("K", 10000) # Field density
 st.session_state.setdefault("T", 270) # Season duration
-st.session_state.setdefault("rho", 0.011) # Roguing rate
+st.session_state.setdefault("rho", 0.033) # Roguing rate
 st.session_state.setdefault("roguing_compliance", 0) # Compliance to rogue
 st.session_state.setdefault("absolute_roguing_rate", 0) # Equals to roguing compliance times roguing rate
 
@@ -98,29 +101,31 @@ step = 0.01
 # st.title("Cassava mixture")
 
 def main():
-    col1, col2, col3, col4, col5 = st.columns([2, 1, 1, 2, 2])
+    col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
+        st.markdown("### Mixture strategy")
         st.session_state.theta_A = st.slider("Percentage of cultivar A in the mixture (%):", min_value=0.0, max_value=100.0, value=st.session_state.theta_A*100, step=0.1)/100
     #with col3:
     #    st.session_state.K = st.slider("Field density (plants/ha):", min_value=8000, max_value=15000, value=st.session_state.K, step=500)
-    with col2:
-        insect_pressure_option_dic = {'Very low': 0, 'Low': 1, 'Medium': 2, 'High': 3, 'Very high': 4}
-        selected_pressure = st.selectbox("Plant-wise insect burden", options=list(insect_pressure_option_dic.keys()))
-        if insect_pressure_option_dic[selected_pressure] == 0:
-            st.session_state.f = st.session_state.f_very_low
-        elif insect_pressure_option_dic[selected_pressure] == 1:
-            st.session_state.f = st.session_state.f_low
-        elif insect_pressure_option_dic[selected_pressure] == 2:
-            st.session_state.f = st.session_state.f_medium
-        elif insect_pressure_option_dic[selected_pressure] == 3:
-            st.session_state.f = st.session_state.f_high
-        elif insect_pressure_option_dic[selected_pressure] == 4:
-            st.session_state.f = st.session_state.f_very_high
-    with col4:
-        subcol1, subcol2 = st.columns([3,2])
+    with col3:
+        st.markdown("### Insect and season details")
+        subcol1, subcol2, subcol3 = st.columns([1,1,1])
         with subcol1:
+            insect_pressure_option_dic = {'Very low': 0, 'Low': 1, 'Medium': 2, 'High': 3, 'Very high': 4}
+            selected_pressure = st.selectbox("Plant-wise insect burden", options=list(insect_pressure_option_dic.keys()))
+            if insect_pressure_option_dic[selected_pressure] == 0:
+                st.session_state.f = st.session_state.f_very_low
+            elif insect_pressure_option_dic[selected_pressure] == 1:
+                st.session_state.f = st.session_state.f_low
+            elif insect_pressure_option_dic[selected_pressure] == 2:
+                st.session_state.f = st.session_state.f_medium
+            elif insect_pressure_option_dic[selected_pressure] == 3:
+                st.session_state.f = st.session_state.f_high
+            elif insect_pressure_option_dic[selected_pressure] == 4:
+                st.session_state.f = st.session_state.f_very_high
+        with subcol2:
             st.session_state.T = st.number_input("Season duration (days):", min_value=180, max_value=500, value=st.session_state.T, step=1)
-        with subcol2: 
+        with subcol3: 
             roguing_checkbox = st.checkbox("Roguing?")
             if roguing_checkbox:
                 st.session_state.roguing_compliance = 1
@@ -148,7 +153,10 @@ def main():
 if main_tab == "Select cultivars":
     edit_tab()
 if main_tab == "Simulation":
-    main()
+    if st.session_state.selected_first == None or st.session_state.selected_second == None:
+        st.markdown("## Select two cultivars in the nearby tab")
+    else:
+        main()
     
 
    # _, col1, col2, _ = st.columns([1, 5, 5, 1])

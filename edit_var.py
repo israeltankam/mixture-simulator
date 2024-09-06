@@ -197,13 +197,43 @@ def edit_tab():
                     st.session_state.d_B = None
                     st.session_state.yield_healthy_B = None
                     st.session_state.yield_diseased_B = None
+    varcol1, varcol2, varcol3 = st.columns([1, 1, 4])
+    with varcol1:
+        if st.session_state.selected_first:
+            st.markdown(f"""
+            <pre>
+        <b>Cultivar A</b> <span style="background-color: #f4d46e;">({st.session_state.selected_first[0] + 1}, {st.session_state.selected_first[1] + 1})<span>
+        <div style="border: 1px solid black; padding: 10px; margin-top: 5px;">
+        <b>{data[st.session_state.selected_first[0]][st.session_state.selected_first[1]]['type']} </b>
+        <br />
+        <b>Infection detectability:</b> {100*st.session_state.d_A:.2f}%, 
+        <br />
+        <b>Yield Healthy:</b> {st.session_state.yield_healthy_A} t/ha
+        <br />
+        <b>Yield Diseased:</b> {st.session_state.yield_diseased_A} t/ha
+        <br />
+        <b>Model parameters:</b> acquisition = {st.session_state.alpha_A}, inoculation = {st.session_state.beta_A}
+            </pre>
+        </div>
+            """, unsafe_allow_html=True)
+    with varcol2:
+        if st.session_state.selected_second:
+            st.markdown(f"""
+            <pre>
+        <b>Cultivar B</b> <span style="background-color: #f4d46e;">({st.session_state.selected_second[0] + 1}, {st.session_state.selected_second[1] + 1}) </span>
+        <div style="border: 1px solid black; padding: 10px; margin-top: 5px;">
+        <b>{data[st.session_state.selected_second[0]][st.session_state.selected_second[1]]['type']} </b>
+        <br />
+        <b>Infection detectability:</b> {100*st.session_state.d_B:.2f}%, 
+        <br />
+        <b>Yield Healthy:</b> {st.session_state.yield_healthy_B} t/ha
+        <br />
+        <b>Yield Diseased:</b> {st.session_state.yield_diseased_B} t/ha
+        <br />
+        <b>Model parameters:</b> acquisition = {st.session_state.alpha_B}, inoculation = {st.session_state.beta_B}
+            </pre>
+        </div>
+            """, unsafe_allow_html=True)
 
-    if st.session_state.selected_first:
-        st.markdown(f"**Cultivar A** ({st.session_state.selected_first[0] + 1}, {st.session_state.selected_first[1] + 1}):")
-        st.markdown(f"**Details ->** Type: **{data[st.session_state.selected_first[0]][st.session_state.selected_first[1]]['type']}**, Alpha: {st.session_state.alpha_A}, Beta: {st.session_state.beta_A}, d: {st.session_state.d_A}, Yield Healthy: {st.session_state.yield_healthy_A}, Yield Diseased: {st.session_state.yield_diseased_A}")
-
-    if st.session_state.selected_second:
-        st.markdown(f"**Cultivar B** ({st.session_state.selected_second[0] + 1}, {st.session_state.selected_second[1] + 1}):")
-        st.markdown(f"**Details ->** Type: **{data[st.session_state.selected_second[0]][st.session_state.selected_second[1]]['type']}**, Alpha: {st.session_state.alpha_B}, Beta: {st.session_state.beta_B}, d: {st.session_state.d_B}, Yield Healthy: {st.session_state.yield_healthy_B}, Yield Diseased: {st.session_state.yield_diseased_B}")
     return(st.session_state)
 
