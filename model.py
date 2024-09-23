@@ -1,8 +1,10 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import minimize_scalar
+from scipy.optimize import basinhopping
 import matplotlib.pyplot as plt
 import streamlit as st
+import plotly.graph_objects as go
 
 def modelTrajectories(theta, session_state):
     # Importing parameters
@@ -19,8 +21,6 @@ def modelTrajectories(theta, session_state):
     beta_B = session_state.beta_B
     gamma_A = session_state.gamma_A
     gamma_B = session_state.gamma_B
-    d_A = session_state.d_A
-    d_B = session_state.d_B
     # Initial values
     lA_0 = 0
     iA_0 = theta/K
@@ -35,9 +35,9 @@ def modelTrajectories(theta, session_state):
         lA, iA, lB, iB, VA, VB = y
         psi = 1/(sigma + omega + r)
         dlAdt = (psi*sigma/K)*beta_A*(theta - lA - iA)*(VA + VB) - gamma_A*lA
-        diAdt = gamma_A * lA - rho*d_A*iA
+        diAdt = gamma_A * lA - rho*iA
         dlBdt = (psi*sigma/K)*beta_B*(1 - theta - lB - iB)*(VA + VB) - gamma_B*lB
-        diBdt = gamma_B * lB - rho*d_B*iB
+        diBdt = gamma_B * lB - rho*iB
         dVAdt = alpha_A*(iA*F - psi*(sigma*iA*(VA+VB) + (omega+r)*VA)) - (omega + r)*VA
         dVBdt = alpha_B*(iB*F - psi*(sigma*iB*(VA+VB) + (omega+r)*VB)) - (omega + r)*VB
         return [dlAdt, diAdt, dlBdt, diBdt, dVAdt, dVBdt]
@@ -74,7 +74,7 @@ def cropYield(theta, session_state):
     sB = (1-theta) - (lB + iB)
     
     # Calculate yield per hectare
-    y = session_state.yield_healthy_A*(sA+lA) + session_state.yield_diseased_A*iA + session_state.yield_healthy_B*(sB+lB) + session_state.yield_diseased_B*iB
+    y = session_state.yield_healthy_A*(sA+lA) + session_state.yield_infected_A*iA + session_state.yield_healthy_B*(sB+lB) + session_state.yield_infected_B*iB
     return y
 def distinctCropYield(theta, session_state):
     sol = modelTrajectories(theta,session_state)
@@ -90,21 +90,104 @@ def distinctCropYield(theta, session_state):
     sB = (1-theta) - (lB + iB)
     
     # Calculate yield per hectare
-    yA = session_state.yield_healthy_A*(sA+lA) + session_state.yield_diseased_A*iA 
-    yB = session_state.yield_healthy_B*(sB+lB) + session_state.yield_diseased_B*iB
+    yA = session_state.yield_healthy_A*(sA+lA) + session_state.yield_infected_A*iA 
+    yB = session_state.yield_healthy_B*(sB+lB) + session_state.yield_infected_B*iB
     return yA, yB
 
-def yieldOptimizer(session_state):
+#def yieldOptimizer(session_state):
     # Define bounds for theta
-    theta_bounds = (0, 1)
-
+#    theta_bounds = (0, 1)
     # Define the negative function function
-    def neg_cropYield(theta):
-        return -cropYield(theta, session_state)
+#    def neg_cropYield(theta):
+#        return -cropYield(theta, session_state)
 
     # Minimize the negative function function
-    result = minimize_scalar(neg_cropYield, bounds=theta_bounds, method='bounded')
-    return result.x, -result.fun
+#    result = minimize_scalar(neg_cropYield, bounds=theta_bounds, method='bounded')
+#    return result.x, -result.fun
+def yieldOptimizer(session_state):
+    bounds = [(0, 1)]  # Bounds for theta
+    def neg_cropYield(theta):
+        return -cropYield(theta[0], session_state)
+
+    result = basinhopping(neg_cropYield, [0.5], niter=400, stepsize=0.5, minimizer_kwargs={"bounds": bounds})
+    return result.x[0], -result.fun
+
+def plotYieldVsTheta(session_state):
+    # Define the range for theta
+    theta_values = np.linspace(0, 1, 100)
+    
+    # Calculate cropYield for each theta
+    yield_values = [cropYield(theta, session_state) for theta in theta_values]
+    
+    # Create the plot
+    fig, ax = plt.subplots(figsize=(10, 6))  # Adjusted width to 60% of A4 paper width
+    ax.plot(theta_values, yield_values, label='cropYield(theta)', color='black', linewidth=3)
+    ax.set_xlabel('Proportion of Cultivar A', fontsize=18)
+    ax.set_ylabel('Total Yield', fontsize=18)
+    ax.set_title('Total yield vs Distribution of Cultivar A', fontsize=18)
+    #ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
+    
+def plotYieldVsThetaInteractive(session_state):
+    # Define the range for theta
+    theta_values = np.linspace(0, 1, 100)
+    category_A = session_state.category_A
+    
+    # Calculate cropYield for each theta
+    yield_values = [cropYield(theta, session_state) for theta in theta_values]
+    
+    # Create the interactive plot using Plotly
+    fig = go.Figure()
+
+    # Add the line plot with hover information
+    fig.add_trace(go.Scatter(
+        x=theta_values*100,
+        y=yield_values,
+        mode='lines',
+        line=dict(color='black', width=3),
+        hovertemplate='Proportion of Cultivar A: <b>%{x:.2f} %</b><br />Total Yield: <b>%{y:.2f} ton/ha</b><extra></extra>', # Tooltip format
+        hoverlabel=dict(
+            font=dict(size=16)  # Increase tooltip font size
+        )
+    ))
+
+    # Set plot layout with axis labels and title
+    fig.update_layout(
+        title=dict(
+            text=f'Total Yield vs Proportion of {category_A} Cultivar A',
+            xanchor='center',  # Center the title
+            x=0.5,  # Horizontal center
+            font=dict(size=18)  # Font size of the title
+        ),
+        xaxis_title=dict(
+            text=f'Proportion of {category_A} Cultivar A (%)',
+            font=dict(size=18, color='black') # Increase xlabel size
+        ),
+        yaxis_title=dict(
+            text='Total Yield (ton/ha)',
+            font=dict(size=18, color='black')  # Increase ylabel size
+        ),
+        xaxis=dict(
+            tickfont=dict(size=18, color='black'),
+            showline=True,  # Display the x-axis line
+            linecolor='black',  # Color of the x-axis line
+            mirror=True,  # Mirror the axis line on both sides
+            gridcolor='lightgray',
+        ),
+        yaxis=dict(
+            tickfont=dict(size=18, color='black'),
+            showline=True,  # Display the y-axis line
+            linecolor='black',  # Color of the y-axis line
+            mirror=True,  # Mirror the axis line on both sides
+            gridcolor='lightgray',
+        ),
+        width=600,
+        height=420,
+    )
+
+    # Display the interactive plot inside Streamlit
+    st.plotly_chart(fig)
 
 def displayOptimal(theta, session_state):
 # Calculate the values
@@ -149,6 +232,8 @@ def displayDiseaseDynamics(theta, session_state):
     sol = modelTrajectories(theta, session_state)
     yieldA, yieldB = distinctCropYield(theta, session_state)
     total_yield = yieldA + yieldB
+    category_A = session_state.category_A
+    category_B = session_state.category_B
     
     # Access the solution
     t_values = sol.t
@@ -158,20 +243,21 @@ def displayDiseaseDynamics(theta, session_state):
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
     # First subplot
-    axes[0].plot(t_values, iA_values, label='Infected A cultivar')
-    axes[0].plot(t_values, iB_values, label='Infected B cultivar')
-    axes[0].set_xlabel('Time')
-    axes[0].set_ylabel('Proportions')
-    axes[0].set_title('Disease Dynamics Over Time')
+    axes[0].plot(t_values, iA_values+iB_values, label='All infected plants', color='black', linewidth=3)
+    axes[0].plot(t_values, iA_values, label=f'Infected {category_A}')
+    axes[0].plot(t_values, iB_values, label=f'Infected {category_B}')
+    axes[0].set_xlabel('Time', fontsize=18)
+    axes[0].set_ylabel('Proportions', fontsize=18)
+    axes[0].set_title('Disease Dynamics Over Time', fontsize=18)
     axes[0].legend()
     axes[0].grid(True)
-    axes[0].text(10, max(np.max(iA_values),np.max(iB_values))/2, f'Yield of Cultivar A = {yieldA:.2f}' + ' ton/ha \n' + f'Yield of Cultivar B = {yieldB:.2f}' + ' ton/ha \n' + f'Total Yield = {total_yield:.2f}' + ' ton/ha', fontsize=12, color='black', ha='left', va='center', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.5'))
+    axes[0].text(10, max(np.max(iA_values),np.max(iB_values))/2, f'{category_A} Cultivar Yield = {yieldA:.2f}' + ' ton/ha \n' + f'{category_B} Cultivar Yield = {yieldB:.2f}' + ' ton/ha \n' + f'Total Yield = {total_yield:.2f}' + ' ton/ha', fontsize=12, color='black', ha='left', va='center', bbox=dict(facecolor='none', edgecolor='black', boxstyle='round,pad=0.5'))
     # Second subplot
-    axes[1].plot(t_values, VA_values, label='Acquired on A plants')
-    axes[1].plot(t_values, VB_values, label='Acquired on B plants')
-    axes[1].set_xlabel('Time')
-    axes[1].set_ylabel('Populations')
-    axes[1].set_title('Infected Insect Dynamics Over Time')
+    axes[1].plot(t_values, VA_values, label=f'Acquired on {category_A} plants')
+    axes[1].plot(t_values, VB_values, label=f'Acquired on {category_B} plants')
+    axes[1].set_xlabel('Time', fontsize=18)
+    axes[1].set_ylabel('Populations', fontsize=18)
+    axes[1].set_title('Infected Insect Dynamics Over Time', fontsize=18)
     axes[1].legend()
     axes[1].grid(True)
 
