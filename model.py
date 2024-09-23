@@ -104,13 +104,37 @@ def distinctCropYield(theta, session_state):
     # Minimize the negative function function
 #    result = minimize_scalar(neg_cropYield, bounds=theta_bounds, method='bounded')
 #    return result.x, -result.fun
-def yieldOptimizer(session_state):
+def yieldOptimizerRandom(session_state):
     bounds = [(0, 1)]  # Bounds for theta
     def neg_cropYield(theta):
         return -cropYield(theta[0], session_state)
 
     result = basinhopping(neg_cropYield, [0.5], niter=400, stepsize=0.5, minimizer_kwargs={"bounds": bounds})
     return result.x[0], -result.fun
+
+def yieldOptimizer(session_state):
+    n = 100 # Optimization step
+    max_yield = -np.inf
+    best_theta = None
+    #Define the range for theta
+    theta_values = np.linspace(0, 1, n)
+    
+    for theta in theta_values:
+        yield_value = cropYield(theta, session_state)
+        if yield_value > max_yield:
+            max_yield = yield_value
+            best_theta = theta
+    
+    # Refine the intervall and restart     
+    theta_values = np.linspace(max(0,best_theta-1/(2*n)), min(1,best_theta+1/(2*n)), n)
+    for theta in theta_values:
+        yield_value = cropYield(theta, session_state)
+        if yield_value > max_yield:
+            max_yield = yield_value
+            best_theta = theta
+            
+    return round(best_theta,3), max_yield
+    
 
 def plotYieldVsTheta(session_state):
     # Define the range for theta
