@@ -50,7 +50,7 @@ def edit_tab():
         st.session_state.category_B = None
     _,col,_ = st.columns([1, 3, 1])
     with col:
-        st.markdown("**Click on two cultivar buttons to select them for the mixture. The selected cultivar cards will be displayed below, with 'Cultivar A' corresponding to the first button clicked and 'Cultivar B' to the second.**")
+        st.markdown("** _Click on two cultivar buttons to select them for the mixture. The selected cultivar cards will be displayed below, with 'Cultivar A' corresponding to the first button clicked and 'Cultivar B' to the second._")
     # Display the grid
     cols = st.columns(4) # +1 if I add a new variety
     for j in range(4):

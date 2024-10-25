@@ -38,7 +38,7 @@ def about_and_settings():
         st.markdown("# Parameter settings")
     with col2:
         st.markdown("### Variety-wise epidemiological parameters")
-        st.markdown("_These settings entirely define the disease considered. After you configure this, you have to reselect the cultivars before going back to the simulation._")
+        st.markdown("** _These settings entirely define the disease considered. After you configure this, you have to reselect the cultivars before going back to the simulation._")
         epi_cols = st.columns(2)
         with epi_cols[0]:
             st.session_state.alpha_susc = st.number_input("**Acquisition** rate on **suceptible and tolerant**:", min_value=0.01, max_value=2500.0, value=st.session_state.alpha_susc, step=0.01, format="%.2f")
