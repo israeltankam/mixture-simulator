@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import plotly.graph_objects as go
 
+def ff(x, y, theta):
+    return x * y + x * (1 - y) * (1 / theta)
+
+def gg(x, y, theta):
+    return x * y + (1 - x) * y * (1 / (1 - theta))
+
 def modelTrajectories(theta, session_state):
     # Importing parameters
     f = session_state.f 
@@ -21,6 +27,12 @@ def modelTrajectories(theta, session_state):
     beta_B = session_state.beta_B
     gamma_A = session_state.gamma_A
     gamma_B = session_state.gamma_B
+    
+    # Considering plant type for initial values
+    sc_A = 0 if session_state.category_A == 'Service' else 1
+    sc_B = 0 if st.session_state.category_B == 'Service' else 1
+
+        
     # Initial values
     lA_0 = 0
     iA_0 = theta/K
@@ -30,6 +42,11 @@ def modelTrajectories(theta, session_state):
     VA_0 = 0 #0.1 * F/2 # Initially, 10% of vectors are infected
     VB_0 = VA_0
     
+    # Rescale the initial values for possible service plant
+    if theta != 0:
+        iA_0 = ff(sc_A, sc_B, theta)*iA_0 
+    if theta != 1:
+        iB_0 = gg(sc_A, sc_B, theta)*iB_0 
     # Define the ODE system
     def ode_system(t, y):
         lA, iA, lB, iB, VA, VB = y
@@ -144,7 +161,7 @@ def plotYieldVsTheta(session_state):
     yield_values = [cropYield(theta, session_state) for theta in theta_values]
     
     # Create the plot
-    fig, ax = plt.subplots(figsize=(10, 6))  # Adjusted width to 60% of A4 paper width
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=200)  # Adjusted width to 60% of A4 paper width
     ax.plot(theta_values, yield_values, label='cropYield(theta)', color='black', linewidth=3)
     ax.set_xlabel('Proportion of Cultivar A', fontsize=18)
     ax.set_ylabel('Total Yield', fontsize=18)
@@ -225,7 +242,7 @@ def displayOptimal(theta, session_state):
     # Plotting
     sizes = [theta, (1-theta)]
 
-    fig, ax = plt.subplots(figsize=(9.6, 5), subplot_kw=dict(aspect="equal"))  # Adjusted width to 60% of A4 paper width
+    fig, ax = plt.subplots(figsize=(9.6, 5), subplot_kw=dict(aspect="equal"), dpi=200)  # Adjusted width to 60% of A4 paper width
 
     wedges, texts, autotexts = ax.pie(sizes, labels=['', ''], autopct='%1.1f%%', startangle=140, explode=(0.1, 0), shadow=True)
 
@@ -264,7 +281,7 @@ def displayDiseaseDynamics(theta, session_state):
     lA_values, iA_values, lB_values, iB_values, VA_values, VB_values = sol.y
 
     # Plot the solutions
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=200)
 
     # First subplot
     axes[0].plot(t_values, iA_values+iB_values, label='All infected plants', color='black', linewidth=3)

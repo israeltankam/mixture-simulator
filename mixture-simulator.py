@@ -47,6 +47,11 @@ default_T = 360
 default_theta = 1.0
 # Set Plant parameters
 
+st.session_state.setdefault("alpha_susc", 0.27)
+st.session_state.setdefault("beta_susc", 132.21)
+st.session_state.setdefault("alpha_res", 0.09)
+st.session_state.setdefault("beta_res", 41.81)
+
 #Default varieties selected in the cultivar editing tab (edit_var.py
 if 'selected_first' not in st.session_state:
     st.session_state.setdefault("selected_first", 0)  # First variety selected in the grid
@@ -58,15 +63,15 @@ st.session_state.setdefault("theta_A", default_theta)  # 50% of each variaty as 
 # Plant A parameters
 #Susceptible 
 if 'alpha_A' not in st.session_state:
-    st.session_state.setdefault("alpha_A", 0.0141)
+    st.session_state.setdefault("alpha_A", st.session_state.alpha_susc)
 if 'beta_A' not in st.session_state:
-    st.session_state.setdefault("beta_A", 7.0991)
+    st.session_state.setdefault("beta_A", st.session_state.beta_susc)
 if 'yield_healthy_A' not in st.session_state:
-    st.session_state.setdefault("yield_healthy_A", 31)
+    st.session_state.setdefault("yield_healthy_A", 31.0)
 if 'yield_infected_A' not in st.session_state:
     st.session_state.setdefault("yield_infected_A", 18.6)
 if 'gamma_A' not in st.session_state:
-    st.session_state.setdefault("gamma_A", 0.68)
+    st.session_state.setdefault("gamma_A", 0.071)
 if 'category_A' not in st.session_state:
     st.session_state.setdefault("category_A", "Susceptible")
     
@@ -78,15 +83,15 @@ if 'category_A' not in st.session_state:
 
 # Plant B parameters
 if 'alpha_B' not in st.session_state:
-    st.session_state.setdefault("alpha_B", 0.0124)
+    st.session_state.setdefault("alpha_B", st.session_state.alpha_res)
 if 'beta_B' not in st.session_state:
-    st.session_state.setdefault("beta_B", 1.9442)
+    st.session_state.setdefault("beta_B", st.session_state.beta_res)
 if 'yield_healthy_B' not in st.session_state:
-    st.session_state.setdefault("yield_healthy_B", 25)
+    st.session_state.setdefault("yield_healthy_B", 25.0)
 if 'yield_infected_B' not in st.session_state:
-    st.session_state.setdefault("yield_infected_B", 15)
+    st.session_state.setdefault("yield_infected_B", 15.0)
 if 'gamma_B' not in st.session_state:
-    st.session_state.setdefault("gamma_B", 0.033)
+    st.session_state.setdefault("gamma_B", 0.071)
 if 'category_B' not in st.session_state:
     st.session_state.setdefault("category_B", "Resistant")
 
@@ -97,6 +102,7 @@ st.session_state.setdefault("omega", 0.19) # Mortality parameter
 st.session_state.setdefault("r", 0.0)  # Recovering parameter
 
 # Insect abundance parameters
+st.session_state.setdefault("f_very_low", 0.1) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_low", 1.0) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_medium", 5.0) # Insect abundance per plant in medium insect pressure
 st.session_state.setdefault("f_high", 10.0) # Insect abundance per plant in high insect pressure
@@ -111,7 +117,7 @@ st.session_state.setdefault("roguing_compliance", 0) # Compliance to rogue
 st.session_state.setdefault("absolute_roguing_rate", 0) # Equals to roguing compliance times roguing rate
 
 # Selected pressure parameters
-st.session_state.setdefault("f", st.session_state.f_low) # Insect abundance per plant
+st.session_state.setdefault("f", st.session_state.f_very_low) # Insect abundance per plant
 
 
 step = 0.01
@@ -136,13 +142,15 @@ def main():
         st.markdown("### Insect and roguing details")
         subcol1, subcol2 = st.columns([1,1])
         with subcol1:
-            insect_pressure_option_dic = {'Low': 0, 'Medium': 1, 'High': 2}
+            insect_pressure_option_dic = {'Very low': 0,'Low': 1, 'Medium': 2, 'High': 3}
             selected_pressure = st.selectbox("Plant-wise insect burden", options=list(insect_pressure_option_dic.keys()))
             if insect_pressure_option_dic[selected_pressure] == 0:
-                st.session_state.f = st.session_state.f_low
+                st.session_state.f = st.session_state.f_very_low
             elif insect_pressure_option_dic[selected_pressure] == 1:
-                st.session_state.f = st.session_state.f_medium
+                st.session_state.f = st.session_state.f_low
             elif insect_pressure_option_dic[selected_pressure] == 2:
+                st.session_state.f = st.session_state.f_medium
+            elif insect_pressure_option_dic[selected_pressure] == 3:
                 st.session_state.f = st.session_state.f_high   
         with subcol2: 
             roguing_checkbox = st.checkbox("Roguing?")
@@ -163,9 +171,9 @@ def main():
     with plotcol1:
         st.markdown("## Your Mixture")
         displayDiseaseDynamics(st.session_state.theta_A, st.session_state)  
-    with plotcol3:
-        st.markdown("## Total yield vs Mixture")
-        plotYieldVsThetaInteractive(st.session_state)
+    #with plotcol3:
+        #st.markdown("## Total yield vs Mixture")
+        #plotYieldVsThetaInteractive(st.session_state)
         
     find_optimal_checkbox = st.checkbox("### Find the Optimal")
     if find_optimal_checkbox:

@@ -2,24 +2,25 @@ import streamlit as st
 
 def edit_tab():
     if 'yh_susc' not in st.session_state:
-        st.session_state.yh_susc = 31
+        st.session_state.yh_susc = 31.0
     if 'yi_susc' not in st.session_state:
         st.session_state.yi_susc = 18.6
     if 'yh_res' not in st.session_state:
-        st.session_state.yh_res = 25
+        st.session_state.yh_res = 25.0
     if 'yi_res' not in st.session_state:
-        st.session_state.yi_res = 15
+        st.session_state.yi_res = 15.0
     if 'yh_tol' not in st.session_state:
-        st.session_state.yh_tol = 31
+        st.session_state.yh_tol = 25.0
     if 'yi_tol' not in st.session_state:
-        st.session_state.yi_tol = 27.9
+        st.session_state.yi_tol = 24.0
 
     # Define the data
     data = [
-            {"type": "Susceptible", "alpha": 0.011, "beta": 10, "yield_healthy": st.session_state.yh_susc, "yield_infected": st.session_state.yi_susc},
-            {"type": "Resistant", "alpha": 0.0096, "beta": 3, "yield_healthy": st.session_state.yh_res, "yield_infected": st.session_state.yi_res},
+            {"type": "Susceptible", "alpha": st.session_state.alpha_susc, "beta": st.session_state.beta_susc, "yield_healthy": st.session_state.yh_susc, "yield_infected": st.session_state.yi_susc},
+            {"type": "Resistant", "alpha": st.session_state.alpha_res, "beta": st.session_state.beta_res, "yield_healthy": st.session_state.yh_res, "yield_infected": st.session_state.yi_res},
             #{"type": "Resistant high yield", "alpha": 0.0124, "beta": 1.9442, "yield_healthy": 40, "yield_infected": 30},
-            {"type": "Tolerant", "alpha": 0.011, "beta": 10, "yield_healthy": st.session_state.yh_tol, "yield_infected": st.session_state.yi_tol},
+            {"type": "Tolerant", "alpha": st.session_state.alpha_susc, "beta": st.session_state.beta_susc, "yield_healthy": st.session_state.yh_tol, "yield_infected": st.session_state.yi_tol},
+            {"type": "Service", "alpha": 0.0, "beta": 0.0, "yield_healthy": 0.0, "yield_infected": 0.0},
     ]
     # Initialize session state variables if they don't exist
     if 'selected_first' not in st.session_state:
@@ -47,10 +48,12 @@ def edit_tab():
         st.session_state.yield_infected_B = None
     if 'category_B' not in st.session_state:
         st.session_state.category_B = None
-        
+    _,col,_ = st.columns([1, 3, 1])
+    with col:
+        st.markdown("**Click on two cultivar buttons to select them for the mixture. The selected cultivar cards will be displayed below, with 'Cultivar A' corresponding to the first button clicked and 'Cultivar B' to the second.**")
     # Display the grid
-    cols = st.columns(3) #4 if I add a resistant material
-    for j in range(3):
+    cols = st.columns(4) # +1 if I add a new variety
+    for j in range(4):
         cell = data[j]
         type_initial = cell['type']
         btn_text = f"{type_initial}, Yield Healthy = {cell['yield_healthy']}, Yield Infected = {cell['yield_infected']}"
