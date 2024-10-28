@@ -138,12 +138,18 @@ def main():
             st.session_state.alpha_res = 0.09
             st.session_state.beta_res = 41.81
             st.session_state.r = 0.0
+            st.session_state.yi_susc = 18.6
+            st.session_state.yi_res = 15
+            st.session_state.yi_tol = 24
         elif disease_option_dic[selected_disease] == 2:
             st.session_state.alpha_susc = 68.88
             st.session_state.beta_susc = 1.19
             st.session_state.alpha_res = 21.78
             st.session_state.beta_res = 0.38
             st.session_state.r = 28.08
+            st.session_state.yi_susc = 3.1
+            st.session_state.yi_res = 2.1
+            st.session_state.yi_tol = 20.25
     with col2:
         st.markdown("### Mixture strategy")
         st.session_state.theta_A = st.slider(f"""Percentage of {st.session_state.category_A} Cultivar in the mixture (%):""", min_value=0.0, max_value=100.0, value=default_theta*100, step=0.1)/100
