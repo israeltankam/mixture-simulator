@@ -39,6 +39,23 @@ def about_and_settings():
     with col2:
         st.markdown("### Variety-wise epidemiological parameters")
         st.markdown("** _These settings entirely define the disease considered. After you configure this, you have to reselect the cultivars before going back to the simulation._")
+        quick_menu_cols = st.columns(2)
+        with quick_menu_cols[0]:
+            disease_option_dic = {'- Default -': 0,'CMD': 1, 'CBSD': 2}
+            selected_disease = st.selectbox("**Quick disease selection**", options=list(disease_option_dic.keys()))
+            if disease_option_dic[selected_disease] == 1:
+                st.session_state.alpha_susc = 0.27
+                st.session_state.beta_susc = 132.21
+                st.session_state.alpha_res = 0.09
+                st.session_state.beta_res = 41.81
+                st.session_state.r = 0.0
+            elif disease_option_dic[selected_disease] == 2:
+                st.session_state.alpha_susc = 68.88
+                st.session_state.beta_susc = 1.19
+                st.session_state.alpha_res = 21.78
+                st.session_state.beta_res = 0.38
+                st.session_state.r = 28.08
+
         epi_cols = st.columns(2)
         with epi_cols[0]:
             st.session_state.alpha_susc = st.number_input("**Acquisition** rate on **suceptible and tolerant**:", min_value=0.01, max_value=2500.0, value=st.session_state.alpha_susc, step=0.01, format="%.2f")
