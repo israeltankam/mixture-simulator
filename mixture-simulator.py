@@ -60,6 +60,21 @@ if 'selected_second' not in st.session_state:
 #Mixture distribution
 st.session_state.setdefault("theta_A", default_theta)  # 50% of each variaty as default mixture
 
+
+# Plant General Parameters
+if 'yh_susc' not in st.session_state:
+    st.session_state.yh_susc = 31.0
+if 'yi_susc' not in st.session_state:
+    st.session_state.yi_susc = 18.6
+if 'yh_res' not in st.session_state:
+    st.session_state.yh_res = 25.0
+if 'yi_res' not in st.session_state:
+    st.session_state.yi_res = 15.0
+if 'yh_tol' not in st.session_state:
+    st.session_state.yh_tol = 25.0
+if 'yi_tol' not in st.session_state:
+    st.session_state.yi_tol = 24.0
+
 # Plant A parameters
 #Susceptible 
 if 'alpha_A' not in st.session_state:
@@ -67,9 +82,9 @@ if 'alpha_A' not in st.session_state:
 if 'beta_A' not in st.session_state:
     st.session_state.setdefault("beta_A", st.session_state.beta_susc)
 if 'yield_healthy_A' not in st.session_state:
-    st.session_state.setdefault("yield_healthy_A", 31.0)
+    st.session_state.setdefault("yield_healthy_A", st.session_state.yh_susc)
 if 'yield_infected_A' not in st.session_state:
-    st.session_state.setdefault("yield_infected_A", 18.6)
+    st.session_state.setdefault("yield_infected_A", st.session_state.yi_susc)
 if 'gamma_A' not in st.session_state:
     st.session_state.setdefault("gamma_A", 0.071)
 if 'category_A' not in st.session_state:
@@ -87,9 +102,9 @@ if 'alpha_B' not in st.session_state:
 if 'beta_B' not in st.session_state:
     st.session_state.setdefault("beta_B", st.session_state.beta_res)
 if 'yield_healthy_B' not in st.session_state:
-    st.session_state.setdefault("yield_healthy_B", 25.0)
+    st.session_state.setdefault("yield_healthy_B", st.session_state.yh_res)
 if 'yield_infected_B' not in st.session_state:
-    st.session_state.setdefault("yield_infected_B", 15.0)
+    st.session_state.setdefault("yield_infected_B", st.session_state.yi_res)
 if 'gamma_B' not in st.session_state:
     st.session_state.setdefault("gamma_B", 0.071)
 if 'category_B' not in st.session_state:
@@ -150,6 +165,19 @@ def main():
             st.session_state.yi_susc = 3.1
             st.session_state.yi_res = 2.1
             st.session_state.yi_tol = 20.25
+        if st.session_state.category_A == "Susceptible":
+            st.session_state.yield_infected_A = st.session_state.yi_susc
+        elif st.session_state.category_A == "Resistant":
+            st.session_state.yield_infected_A = st.session_state.yi_res
+        elif st.session_state.category_A == "Tolerant":
+            st.session_state.yield_infected_A = st.session_state.yi_tol
+        if st.session_state.category_B == "Susceptible":
+            st.session_state.yield_infected_B = st.session_state.yi_susc
+        elif st.session_state.category_B == "Resistant":
+            st.session_state.yield_infected_B = st.session_state.yi_res
+        elif st.session_state.category_B == "Tolerant":
+            st.session_state.yield_infected_B = st.session_state.yi_tol    
+        
     with col2:
         st.markdown("### Mixture strategy")
         st.session_state.theta_A = st.slider(f"""Percentage of {st.session_state.category_A} Cultivar in the mixture (%):""", min_value=0.0, max_value=100.0, value=default_theta*100, step=0.1)/100
