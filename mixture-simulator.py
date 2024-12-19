@@ -30,7 +30,7 @@ menu_data = [
 ]
 
 over_theme = {'txc_inactive': '#FFFFFF', 'menu_background':'#85929E'}
-st.markdown("## Cassava Mixture simulator")
+st.markdown("## CropMix")
 main_tab= hc.nav_bar(
     menu_definition=menu_data,
     override_theme=over_theme,
@@ -139,7 +139,7 @@ step = 0.01
                             
 
 # Set Streamlit app title
-# st.title("Cassava mixture")
+#st.title("CropMix")
 
 def main():
     col1, col2, col3, col4 = st.columns([3, 4, 3, 4])
