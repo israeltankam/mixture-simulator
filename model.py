@@ -29,8 +29,8 @@ def modelTrajectories(theta, session_state):
     gamma_B = session_state.gamma_B
     
     # Considering plant type for initial values
-    sc_A = 0 if session_state.category_A == 'Buffer' else 1
-    sc_B = 0 if st.session_state.category_B == 'Buffer' else 1
+    sc_A = 0 if session_state.category_A == 'Decoy' else 1
+    sc_B = 0 if st.session_state.category_B == 'Decoy' else 1
 
         
     # Initial values
@@ -42,7 +42,7 @@ def modelTrajectories(theta, session_state):
     VA_0 = 0 #0.1 * F/2 # Initially, 10% of vectors are infected
     VB_0 = VA_0
     
-    # Rescale the initial values for possible buffer plant
+    # Rescale the initial values for possible decoy plant
     if theta != 0:
         iA_0 = ff(sc_A, sc_B, theta)*iA_0 
     if theta != 1:

@@ -20,7 +20,7 @@ def edit_tab():
             {"type": "Resistant", "alpha": st.session_state.alpha_res, "beta": st.session_state.beta_res, "yield_healthy": st.session_state.yh_res, "yield_infected": st.session_state.yi_res},
             #{"type": "Resistant high yield", "alpha": 0.0124, "beta": 1.9442, "yield_healthy": 40, "yield_infected": 30},
             {"type": "Tolerant", "alpha": st.session_state.alpha_susc, "beta": st.session_state.beta_susc, "yield_healthy": st.session_state.yh_tol, "yield_infected": st.session_state.yi_tol},
-            {"type": "Buffer", "alpha": 0.0, "beta": 0.0, "yield_healthy": 0.0, "yield_infected": 0.0},
+            {"type": "Decoy", "alpha": 0.0, "beta": 0.0, "yield_healthy": 0.0, "yield_infected": 0.0},
     ]
     # Initialize session state variables if they don't exist
     if 'selected_first' not in st.session_state:
