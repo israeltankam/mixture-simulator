@@ -26,8 +26,8 @@ def about_and_settings():
 |                                            | $L_B \\longrightarrow I_B$ | $\\gamma * L_B$                                   |
 | **Roguing**   🌿                             | $I_A \\longrightarrow S_A$ | $\\rho * I_A$                                     |
 |                                            | $I_B \\longrightarrow S_B$ | $\\rho * I_B$                                     |
-| **Aquisition**   🪰                          | $\\longrightarrow V^A$     | $\\alpha^A *$ #virus-free insects on $I_A$        |
-|                                            | $\\longrightarrow V^B$     | $\\alpha^B *$ #virus-free insects on $I_B$        |
+| **Aquisition**   🪰                          | $\\longrightarrow V^A$     | $\\alpha^A *$ prop. of virus-free insects on $I_A$        |
+|                                            | $\\longrightarrow V^B$     | $\\alpha^B *$ prop. of virus-free insects on $I_B$        |
 | **Recovery**    🪰                           | $V^A \\longrightarrow$     | $r * V^A$                                         |
 |                                            | $V^B \\longrightarrow$     | $r * V^B$                                         |
 | **Insect mortality**   🪰                    | $V^A \\longrightarrow$     | $\\omega * V^A$                                   |
@@ -60,7 +60,7 @@ def about_and_settings():
                 st.session_state.r = 28.08
                 st.session_state.yi_susc = 3.1
                 st.session_state.yi_res = 2.1
-                st.session_state.yi_tol = 20.25
+                st.session_state.yi_tol = 22.75
 
         epi_cols = st.columns(2)
         with epi_cols[0]:
