@@ -164,7 +164,7 @@ def main():
             st.session_state.r = 28.08
             st.session_state.yi_susc = 3.1
             st.session_state.yi_res = 2.1
-            st.session_state.yi_tol = 20.25
+            st.session_state.yi_tol = 22.75
         if st.session_state.category_A == "Susceptible":
             st.session_state.yield_infected_A = st.session_state.yi_susc
         elif st.session_state.category_A == "Resistant":
