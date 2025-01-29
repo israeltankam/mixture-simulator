@@ -117,7 +117,6 @@ st.session_state.setdefault("omega", 0.19) # Mortality parameter
 st.session_state.setdefault("r", 0.0)  # Recovering parameter
 
 # Insect abundance parameters
-st.session_state.setdefault("f_very_low", 0.1) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_low", 1.0) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_medium", 5.0) # Insect abundance per plant in medium insect pressure
 st.session_state.setdefault("f_high", 10.0) # Insect abundance per plant in high insect pressure
@@ -132,7 +131,7 @@ st.session_state.setdefault("roguing_compliance", 0) # Compliance to rogue
 st.session_state.setdefault("absolute_roguing_rate", 0) # Equals to roguing compliance times roguing rate
 
 # Selected pressure parameters
-st.session_state.setdefault("f", st.session_state.f_very_low) # Insect abundance per plant
+st.session_state.setdefault("f", st.session_state.f_low) # Insect abundance per plant
 
 
 step = 0.01
@@ -192,15 +191,13 @@ def main():
         st.markdown("### Insect and roguing details")
         subcol1, subcol2 = st.columns([1,1])
         with subcol1:
-            insect_pressure_option_dic = {'Very low': 0,'Low': 1, 'Medium': 2, 'High': 3}
+            insect_pressure_option_dic = {'Low': 0, 'Medium': 1, 'High': 2}
             selected_pressure = st.selectbox("Plant-wise insect burden", options=list(insect_pressure_option_dic.keys()))
             if insect_pressure_option_dic[selected_pressure] == 0:
-                st.session_state.f = st.session_state.f_very_low
-            elif insect_pressure_option_dic[selected_pressure] == 1:
                 st.session_state.f = st.session_state.f_low
-            elif insect_pressure_option_dic[selected_pressure] == 2:
+            elif insect_pressure_option_dic[selected_pressure] == 1:
                 st.session_state.f = st.session_state.f_medium
-            elif insect_pressure_option_dic[selected_pressure] == 3:
+            elif insect_pressure_option_dic[selected_pressure] == 2:
                 st.session_state.f = st.session_state.f_high   
         with subcol2: 
             roguing_checkbox = st.checkbox("Roguing?")
