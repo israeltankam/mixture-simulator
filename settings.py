@@ -95,7 +95,6 @@ def about_and_settings():
         st.markdown("---")
         
         st.markdown("### Insect abundance setup")
-        st.session_state.f_very_low = st.number_input("Insect abundance per plant in very low insect pressure:", min_value=0.0, max_value=1.0, value=st.session_state.f_very_low, step=0.1, format="%.2f")
         st.session_state.f_low = st.number_input("Insect abundance per plant in low insect pressure:", min_value=0.0, max_value=10.0, value=st.session_state.f_low, step=0.1, format="%.2f")
         st.session_state.f_medium = st.number_input("Insect abundance per plant in medium insect pressure:", min_value=0.0, max_value=20.0, value=st.session_state.f_medium, step=1.0, format="%.2f")
         st.session_state.f_high = st.number_input("Insect abundance per plant in high insect pressure:", min_value=0.0, max_value=100.0, value=st.session_state.f_high, step=1.0, format="%.2f")
