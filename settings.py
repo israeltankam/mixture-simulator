@@ -26,8 +26,8 @@ def about_and_settings():
 |                                            | $L_B \\longrightarrow I_B$ | $\\gamma * L_B$                                   |
 | **Roguing**   🌿                             | $I_A \\longrightarrow S_A$ | $\\rho * I_A$                                     |
 |                                            | $I_B \\longrightarrow S_B$ | $\\rho * I_B$                                     |
-| **Aquisition**   🪰                          | $\\longrightarrow V^A$     | $\\alpha^A *$ prop. of virus-free insects on $I_A$        |
-|                                            | $\\longrightarrow V^B$     | $\\alpha^B *$ prop. of virus-free insects on $I_B$        |
+| **Aquisition**   🪰                          | $\\longrightarrow V^A$     | $\\alpha^A *$ #virus-free insects on $I_A$        |
+|                                            | $\\longrightarrow V^B$     | $\\alpha^B *$ #virus-free insects on $I_B$        |
 | **Recovery**    🪰                           | $V^A \\longrightarrow$     | $r * V^A$                                         |
 |                                            | $V^B \\longrightarrow$     | $r * V^B$                                         |
 | **Insect mortality**   🪰                    | $V^A \\longrightarrow$     | $\\omega * V^A$                                   |
@@ -44,20 +44,20 @@ def about_and_settings():
             disease_option_dic = {'- Default -': 0,'CMD': 1, 'CBSD': 2}
             selected_disease = st.selectbox("**Quick disease selection**", options=list(disease_option_dic.keys()))
             if disease_option_dic[selected_disease] == 1:
-                st.session_state.alpha_susc = 0.27
-                st.session_state.beta_susc = 132.21
-                st.session_state.alpha_res = 0.09
-                st.session_state.beta_res = 41.81
+                st.session_state.alpha_susc = 0.34
+                st.session_state.beta_susc = 72.24
+                st.session_state.alpha_res = 0.11
+                st.session_state.beta_res = 22.84
                 st.session_state.r = 0.0
                 st.session_state.yi_susc = 18.6
                 st.session_state.yi_res = 15
                 st.session_state.yi_tol = 24
             elif disease_option_dic[selected_disease] == 2:
-                st.session_state.alpha_susc = 68.88
-                st.session_state.beta_susc = 1.19
-                st.session_state.alpha_res = 21.78
-                st.session_state.beta_res = 0.38
-                st.session_state.r = 28.08
+                st.session_state.alpha_susc = 15.31
+                st.session_state.beta_susc = 1.34
+                st.session_state.alpha_res = 4.84
+                st.session_state.beta_res = 0.42
+                st.session_state.r = 19.37
                 st.session_state.yi_susc = 3.1
                 st.session_state.yi_res = 2.1
                 st.session_state.yi_tol = 22.75
@@ -95,6 +95,7 @@ def about_and_settings():
         st.markdown("---")
         
         st.markdown("### Insect abundance setup")
+        st.session_state.f_very_low = st.number_input("Insect abundance per plant in very low insect pressure:", min_value=0.0, max_value=1.0, value=st.session_state.f_very_low, step=0.1, format="%.2f")
         st.session_state.f_low = st.number_input("Insect abundance per plant in low insect pressure:", min_value=0.0, max_value=10.0, value=st.session_state.f_low, step=0.1, format="%.2f")
         st.session_state.f_medium = st.number_input("Insect abundance per plant in medium insect pressure:", min_value=0.0, max_value=20.0, value=st.session_state.f_medium, step=1.0, format="%.2f")
         st.session_state.f_high = st.number_input("Insect abundance per plant in high insect pressure:", min_value=0.0, max_value=100.0, value=st.session_state.f_high, step=1.0, format="%.2f")

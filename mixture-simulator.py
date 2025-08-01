@@ -117,6 +117,7 @@ st.session_state.setdefault("omega", 0.19) # Mortality parameter
 st.session_state.setdefault("r", 0.0)  # Recovering parameter
 
 # Insect abundance parameters
+st.session_state.setdefault("f_very_low", 0.1) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_low", 1.0) # Insect abundance per plant in low insect pressure
 st.session_state.setdefault("f_medium", 5.0) # Insect abundance per plant in medium insect pressure
 st.session_state.setdefault("f_high", 10.0) # Insect abundance per plant in high insect pressure
@@ -131,7 +132,7 @@ st.session_state.setdefault("roguing_compliance", 0) # Compliance to rogue
 st.session_state.setdefault("absolute_roguing_rate", 0) # Equals to roguing compliance times roguing rate
 
 # Selected pressure parameters
-st.session_state.setdefault("f", st.session_state.f_low) # Insect abundance per plant
+st.session_state.setdefault("f", st.session_state.f_very_low) # Insect abundance per plant
 
 
 step = 0.01
@@ -147,20 +148,20 @@ def main():
         disease_option_dic = {'-- configured in settings --': 0,'CMD': 1, 'CBSD': 2}
         selected_disease = st.selectbox("Quick disease selection", options=list(disease_option_dic.keys()))
         if disease_option_dic[selected_disease] == 1:
-            st.session_state.alpha_susc = 0.27
-            st.session_state.beta_susc = 132.21
-            st.session_state.alpha_res = 0.09
-            st.session_state.beta_res = 41.81
+            st.session_state.alpha_susc = 0.34
+            st.session_state.beta_susc = 72.24
+            st.session_state.alpha_res = 0.11
+            st.session_state.beta_res = 22.84
             st.session_state.r = 0.0
             st.session_state.yi_susc = 18.6
             st.session_state.yi_res = 15
             st.session_state.yi_tol = 24
         elif disease_option_dic[selected_disease] == 2:
-            st.session_state.alpha_susc = 68.88
-            st.session_state.beta_susc = 1.19
-            st.session_state.alpha_res = 21.78
-            st.session_state.beta_res = 0.38
-            st.session_state.r = 28.08
+            st.session_state.alpha_susc = 15.31
+            st.session_state.beta_susc = 1.34
+            st.session_state.alpha_res = 4.84
+            st.session_state.beta_res = 0.42
+            st.session_state.r = 19.37
             st.session_state.yi_susc = 3.1
             st.session_state.yi_res = 2.1
             st.session_state.yi_tol = 22.75
@@ -191,13 +192,15 @@ def main():
         st.markdown("### Insect and roguing details")
         subcol1, subcol2 = st.columns([1,1])
         with subcol1:
-            insect_pressure_option_dic = {'Low': 0, 'Medium': 1, 'High': 2}
+            insect_pressure_option_dic = {'Very low': 0,'Low': 1, 'Medium': 2, 'High': 3}
             selected_pressure = st.selectbox("Plant-wise insect burden", options=list(insect_pressure_option_dic.keys()))
             if insect_pressure_option_dic[selected_pressure] == 0:
-                st.session_state.f = st.session_state.f_low
+                st.session_state.f = st.session_state.f_very_low
             elif insect_pressure_option_dic[selected_pressure] == 1:
-                st.session_state.f = st.session_state.f_medium
+                st.session_state.f = st.session_state.f_low
             elif insect_pressure_option_dic[selected_pressure] == 2:
+                st.session_state.f = st.session_state.f_medium
+            elif insect_pressure_option_dic[selected_pressure] == 3:
                 st.session_state.f = st.session_state.f_high   
         with subcol2: 
             roguing_checkbox = st.checkbox("Roguing?")
